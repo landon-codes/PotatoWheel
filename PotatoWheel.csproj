@@ -7,7 +7,9 @@
         <Nullable>disable</Nullable>
     </PropertyGroup>
     
+    <!-- Dependencies -->
     <ItemGroup>
+      <PackageReference Include="FosterFramework" Version="0.3.0" />
       <PackageReference Include="landon-codes.FosterFlow" Version="0.0.0" />
     </ItemGroup>
 
