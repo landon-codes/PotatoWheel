@@ -17,51 +17,62 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
     public void Update(float deltaTime, KeyboardState keyboard)
     {
         sprite.Update(deltaTime);
-        
-        // Implement movement
-        const int movementSpeed = 10;
 
+        const int movementSpeed = 10;
         bool moving = false;
-        
+        string animationToPlay = "none";
+
+        // Vertical
         if (keyboard.Down(Keys.Up) || keyboard.Down(Keys.W))
         {
             moving = true;
-            
             _position.Y -= movementSpeed;
-            sprite.PlayAnimation("MoveUp", false);
+            animationToPlay = "MoveUp";
         }
-        if (keyboard.Down(Keys.Down) || keyboard.Down(Keys.S))
+        else if (keyboard.Down(Keys.Down) || keyboard.Down(Keys.S))
         {
             moving = true;
-            
             _position.Y += movementSpeed;
-            sprite.PlayAnimation("MoveDown", false);
+            animationToPlay = "MoveDown";
         }
 
+        // Horizontal
         if (keyboard.Down(Keys.Right) || keyboard.Down(Keys.D))
         {
             moving = true;
-            
             _position.X += movementSpeed;
             _direction = "right";
-            sprite.PlayAnimation("MoveHorizontal", false);
+
+           // Don't override vertical animations
+            if (animationToPlay == "none")
+                animationToPlay = "MoveHorizontal";
         }
-        if (keyboard.Down(Keys.Left) || keyboard.Down(Keys.A))
+        else if (keyboard.Down(Keys.Left) || keyboard.Down(Keys.A))
         {
             moving = true;
-            
             _position.X -= movementSpeed;
             _direction = "left";
-            sprite.PlayAnimation("MoveHorizontal", false);
+
+            if (animationToPlay == "none")
+                animationToPlay = "MoveHorizontal";
+        }
+        
+        if (keyboard.Down(Keys.Space))
+        {
+            moving = true;
+            animationToPlay = "Spin";
         }
 
         if (!moving)
         {
             _direction = "right";
-            sprite.PlayAnimation("Idle", false);
+            animationToPlay = "Idle";
         }
+        
+        if (animationToPlay != "none")
+            sprite.PlayAnimation(animationToPlay, false);
     }
-
+    
     public void Draw(Batcher batcher)
     {
         if (_direction == "right")

@@ -34,7 +34,8 @@ public class Game : App
          Path.Combine("Potato", "PotatoIdle.ase"),
          Path.Combine("Potato", "Move", "PotatoDown.ase"),
          Path.Combine("Potato", "Move", "PotatoUp.ase"),
-         Path.Combine("Potato", "Move", "PotatoMoveHorizontal.ase")
+         Path.Combine("Potato", "Move", "PotatoMoveHorizontal.ase"),
+         Path.Combine("Potato", "PotatoSpin.ase")
       ]);
 
       // Create the player sprite
@@ -48,7 +49,11 @@ public class Game : App
          {"MoveUp", [atlasGenerator.GetTexture("PotatoUp0"),
                      atlasGenerator.GetTexture("PotatoUp1")]},
          {"MoveDown", [atlasGenerator.GetTexture("PotatoDown0"),
-                       atlasGenerator.GetTexture("PotatoDown1")]}
+                       atlasGenerator.GetTexture("PotatoDown1")]},
+         {"Spin", [atlasGenerator.GetTexture("PotatoSpin0"),
+                   atlasGenerator.GetTexture("PotatoSpin1"),
+                   atlasGenerator.GetTexture("PotatoSpin2"),
+                   atlasGenerator.GetTexture("PotatoSpin3")]}
       };
       AnimatedSprite playerSprite = new(playerAnimations, "Idle", 0.5f, spriteScale);
       _player = new Potato(playerSprite, new Vector2(Window.Width / 2.0f, (Window.Height / 2.0f) + 5));
