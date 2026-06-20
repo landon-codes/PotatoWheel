@@ -61,7 +61,7 @@ public class Game : App
 
    protected override void Update()
    {
-      _player.Update(Time.Delta);
+      _player.Update(Time.Delta, Input.Keyboard);
    }
    
    protected override void Render()
