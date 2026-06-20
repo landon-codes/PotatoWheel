@@ -9,8 +9,8 @@
     
     <!-- Dependencies -->
     <ItemGroup>
-      <PackageReference Include="FosterFramework" Version="0.3.0" />
-      <PackageReference Include="landon-codes.FosterFlow" Version="0.0.0" />
+        <PackageReference Include="FosterFramework" Version="0.3.0" />
+        <ProjectReference Include="..\FosterFlow\FosterFlow.csproj" />
     </ItemGroup>
 
     <!-- Include Assets folder in builds -->
