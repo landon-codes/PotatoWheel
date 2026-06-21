@@ -13,6 +13,7 @@ public class Game : App
    private Batcher _batcher;
 
    private Potato _player;
+   private Wheel _wheel;
 
    public Game() : base(new AppConfig()
    {
@@ -35,7 +36,11 @@ public class Game : App
          Path.Combine("Potato", "Move", "PotatoDown.ase"),
          Path.Combine("Potato", "Move", "PotatoUp.ase"),
          Path.Combine("Potato", "Move", "PotatoMoveHorizontal.ase"),
-         Path.Combine("Potato", "PotatoSpin.ase")
+         Path.Combine("Potato", "PotatoSpin.ase"),
+         
+         // Wheel animations
+         Path.Combine("Wheel", "WheelIdle.ase"),
+         Path.Combine("Wheel", "WheelSpin.ase")
       ]);
 
       // Create the player sprite
@@ -57,6 +62,18 @@ public class Game : App
       };
       AnimatedSprite playerSprite = new(playerAnimations, "Idle", 0.5f, spriteScale);
       _player = new Potato(playerSprite, new Vector2(Window.Width / 2.0f, (Window.Height / 2.0f) + 5));
+      
+      // Create the wheel 
+      var wheelAnimations = new Dictionary<string, List<Subtexture>>()
+      {
+         {"Idle", [atlasGenerator.GetTexture("WheelIdle")]},
+         {"Spin", [atlasGenerator.GetTexture("WheelSpin0"),
+                     atlasGenerator.GetTexture("WheelSpin1"),
+                     atlasGenerator.GetTexture("WheelSpin2"),
+                     atlasGenerator.GetTexture("WheelSpin3")]}
+      };
+      AnimatedSprite wheelSprite = new(wheelAnimations, "Idle", 0.1f, spriteScale);
+      _wheel = new Wheel(wheelSprite, new Vector2(Window.Width / 2.0f, Window.Height * (1.0f / 4.0f)) );
    }
 
    protected override void Shutdown()
@@ -67,12 +84,14 @@ public class Game : App
    protected override void Update()
    {
       _player.Update(Time.Delta, Input.Keyboard);
+      _wheel.Update(Time.Delta);
    }
    
    protected override void Render()
    {
       Window.Clear(Color.White);
-
+      
+      _wheel.Draw(_batcher);
       _player.Draw(_batcher);
       
       _batcher.Render(Window);

@@ -24,6 +24,11 @@ public class Wheel(AnimatedSprite sprite, Vector2 position)
         return _health;
     }
 
+    public void Update(float deltaTime)
+    {
+        sprite.Update(deltaTime);
+    }
+
     public void Draw(Batcher batcher)
     {
         sprite.Draw(batcher, position);
