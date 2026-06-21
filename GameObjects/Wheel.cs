@@ -1,7 +1,6 @@
 using Foster.Framework;
 using FosterFlow.Graphics;
 using FosterFlow.Collisions;
-using System;
 using System.Numerics;
 
 namespace PotatoWheel.GameObjects;

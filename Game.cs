@@ -11,9 +11,14 @@ game.Run();
 public class Game : App
 {
    private Batcher _batcher;
+   
+   private const float SpriteScale = 7.0f;
 
    private Potato _player;
    private Wheel _wheel;
+
+   private Dictionary<string, List<Subtexture>> _businessMenAnimations;
+   private List<BusinessMan> _businessMen = new();
 
    public Game() : base(new AppConfig()
    {
@@ -28,7 +33,7 @@ public class Game : App
 
    protected override void Startup()
    {
-      const float spriteScale = 7.0f;
+      
       
       AtlasGenerator atlasGenerator = new("Assets", GraphicsDevice, [
          // Player animations
@@ -40,7 +45,11 @@ public class Game : App
          
          // Wheel animations
          Path.Combine("Wheel", "WheelIdle.ase"),
-         Path.Combine("Wheel", "WheelSpin.ase")
+         Path.Combine("Wheel", "WheelSpin.ase"),
+         
+         // Businessmen animations
+         Path.Combine("BusyMan", "BusyManIdle.ase"),
+         Path.Combine("BusyMan", "BusyManHorizontal.ase")
       ]);
 
       // Create the player sprite
@@ -60,7 +69,7 @@ public class Game : App
                    atlasGenerator.GetTexture("PotatoSpin2"),
                    atlasGenerator.GetTexture("PotatoSpin3")]}
       };
-      AnimatedSprite playerSprite = new(playerAnimations, "Idle", 0.5f, spriteScale);
+      AnimatedSprite playerSprite = new(playerAnimations, "Idle", 0.5f, SpriteScale);
       _player = new Potato(playerSprite, new Vector2(Window.Width / 2.0f, (Window.Height / 2.0f) + 5));
       
       // Create the wheel 
@@ -72,18 +81,47 @@ public class Game : App
                      atlasGenerator.GetTexture("WheelSpin2"),
                      atlasGenerator.GetTexture("WheelSpin3")]}
       };
-      AnimatedSprite wheelSprite = new(wheelAnimations, "Idle", 0.1f, spriteScale);
+      AnimatedSprite wheelSprite = new(wheelAnimations, "Idle", 0.1f, SpriteScale);
       _wheel = new Wheel(wheelSprite, new Vector2(Window.Width / 2.0f, Window.Height * (1.0f / 4.0f)) );
+      
+      // Define the animations for businessmen
+      _businessMenAnimations = new Dictionary<string, List<Subtexture>>()
+      {
+         {"Idle", [atlasGenerator.GetTexture("BusyManIdle")]},
+         {"Move", [atlasGenerator.GetTexture("BusyManHorizontal0"),
+                   atlasGenerator.GetTexture("BusyManHorizontal1")]}
+      };
+      
+      CreateNewEnemy();
    }
 
-   protected override void Shutdown()
+   private void CreateNewEnemy()
    {
+      // TODO: Create logic for randomizing the position of enemies.
+      var position = new Vector2(Window.Width / 2.0f, Window.Height / 2.0f);
+      var sprite = new AnimatedSprite(_businessMenAnimations, "Idle", 0.3f, SpriteScale);
       
+      _businessMen.Add(new BusinessMan(sprite, position));
    }
+
+   private void UpdateEnemies()
+   {
+      for (int i = 0; i < _businessMen.Count; i++) 
+         _businessMen[i].Update(Time.Delta);
+   }
+
+   private void RenderEnemies()
+   {
+      for (int i = 0; i < _businessMen.Count; i++)
+         _businessMen[i].Draw(_batcher);
+   }
+
+   protected override void Shutdown() { }
 
    protected override void Update()
    {
       _player.Update(Time.Delta, Input.Keyboard);
+      UpdateEnemies();
       _wheel.Update(Time.Delta);
    }
    
@@ -92,6 +130,7 @@ public class Game : App
       Window.Clear(Color.White);
       
       _wheel.Draw(_batcher);
+      RenderEnemies();
       _player.Draw(_batcher);
       
       _batcher.Render(Window);
