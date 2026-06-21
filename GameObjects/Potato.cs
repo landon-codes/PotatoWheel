@@ -18,7 +18,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
     {
         sprite.Update(deltaTime);
 
-        const int movementSpeed = 10;
+        const int movementSpeed = 400;
         bool moving = false;
         string animationToPlay = "none";
 
@@ -26,13 +26,13 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         if (keyboard.Down(Keys.Up) || keyboard.Down(Keys.W))
         {
             moving = true;
-            _position.Y -= movementSpeed;
+            _position.Y -= movementSpeed * deltaTime;
             animationToPlay = "MoveUp";
         }
         else if (keyboard.Down(Keys.Down) || keyboard.Down(Keys.S))
         {
             moving = true;
-            _position.Y += movementSpeed;
+            _position.Y += movementSpeed * deltaTime;
             animationToPlay = "MoveDown";
         }
 
@@ -40,7 +40,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         if (keyboard.Down(Keys.Right) || keyboard.Down(Keys.D))
         {
             moving = true;
-            _position.X += movementSpeed;
+            _position.X += movementSpeed * deltaTime;
             _direction = "right";
 
            // Don't override vertical animations
@@ -50,7 +50,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         else if (keyboard.Down(Keys.Left) || keyboard.Down(Keys.A))
         {
             moving = true;
-            _position.X -= movementSpeed;
+            _position.X -= movementSpeed * deltaTime;
             _direction = "left";
 
             if (animationToPlay == "none")
