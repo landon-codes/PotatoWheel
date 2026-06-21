@@ -16,6 +16,10 @@ public class Wheel(AnimatedSprite sprite, Vector2 position)
         _health -= damage;
     }
 
+    public Vector2 GetPosition()
+    {
+        return position;
+    }
 
     // Returns the health for use in losing checks
     public int GetHealth()

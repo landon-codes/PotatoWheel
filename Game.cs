@@ -107,7 +107,7 @@ public class Game : App
    private void UpdateEnemies()
    {
       for (int i = 0; i < _businessMen.Count; i++) 
-         _businessMen[i].Update(Time.Delta);
+         _businessMen[i].Update(Time.Delta, _wheel.GetPosition());
    }
 
    private void RenderEnemies()
