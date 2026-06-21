@@ -1,0 +1,83 @@
+﻿using Foster.Framework;
+using FosterFlow.Graphics;
+using FosterFlow.Collisions;
+using System.Numerics;
+
+namespace PotatoWheel.GameObjects;
+
+public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
+{
+    private Vector2 _position = startingPosition;
+
+    // I'm too lazy to implement an enum.
+    private string _direction = "right";
+
+    public CircleBound Bounds => new CircleBound(_position, sprite);
+    
+    public void Update(float deltaTime, KeyboardState keyboard)
+    {
+        sprite.Update(deltaTime);
+
+        const int movementSpeed = 10;
+        bool moving = false;
+        string animationToPlay = "none";
+
+        // Vertical
+        if (keyboard.Down(Keys.Up) || keyboard.Down(Keys.W))
+        {
+            moving = true;
+            _position.Y -= movementSpeed;
+            animationToPlay = "MoveUp";
+        }
+        else if (keyboard.Down(Keys.Down) || keyboard.Down(Keys.S))
+        {
+            moving = true;
+            _position.Y += movementSpeed;
+            animationToPlay = "MoveDown";
+        }
+
+        // Horizontal
+        if (keyboard.Down(Keys.Right) || keyboard.Down(Keys.D))
+        {
+            moving = true;
+            _position.X += movementSpeed;
+            _direction = "right";
+
+           // Don't override vertical animations
+            if (animationToPlay == "none")
+                animationToPlay = "MoveHorizontal";
+        }
+        else if (keyboard.Down(Keys.Left) || keyboard.Down(Keys.A))
+        {
+            moving = true;
+            _position.X -= movementSpeed;
+            _direction = "left";
+
+            if (animationToPlay == "none")
+                animationToPlay = "MoveHorizontal";
+        }
+        
+        if (keyboard.Down(Keys.Space))
+        {
+            moving = true;
+            animationToPlay = "Spin";
+        }
+
+        if (!moving)
+        {
+            _direction = "right";
+            animationToPlay = "Idle";
+        }
+        
+        if (animationToPlay != "none")
+            sprite.PlayAnimation(animationToPlay, false);
+    }
+    
+    public void Draw(Batcher batcher)
+    {
+        if (_direction == "right")
+            sprite.Draw(batcher, _position);
+        else 
+            sprite.Draw(batcher, _position, true, false);
+    }
+}
