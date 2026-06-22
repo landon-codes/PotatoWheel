@@ -10,12 +10,19 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
     private Vector2 _position = startingPosition;
 
     // Accessed externally for attacking
-    private bool _spinning = false;
+    private bool _spinning;
 
     // I'm too lazy to implement an enum.
     private string _direction = "right";
 
-    public CircleBound Bounds => new CircleBound(_position, sprite);
+    public CircleBound Bounds => CalculateBounds();
+
+    private CircleBound CalculateBounds()
+    {
+        var bound = new CircleBound(_position, sprite);
+        bound.ScaleBounds(1.25f);
+        return bound;
+    }
 
     public Vector2 GetPosition()
     {

@@ -12,6 +12,8 @@ public class Game : App
 {
    private Batcher _batcher;
 
+   
+   private float _delayToSpawnEnemy = 2.0f;
    private float _elapsedTime;
    
    private const float SpriteScale = 7.0f;
@@ -151,10 +153,13 @@ public class Game : App
       _elapsedTime += Time.Delta;
       
       // Check if a new enemy should be spawned
-      const float delayToSpawnEnemy = 2.0f;
-      if (_elapsedTime >= delayToSpawnEnemy)
+      if (_elapsedTime >= _delayToSpawnEnemy)
       {
-         _elapsedTime -= delayToSpawnEnemy;
+         _elapsedTime -= _delayToSpawnEnemy;
+         
+         // Slowly makes enemies spawn faster
+          _delayToSpawnEnemy -= (_delayToSpawnEnemy >= 0.9f) ? 0.01f : 0.0f;
+         
          CreateNewEnemy();
       }
       
