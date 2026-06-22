@@ -11,7 +11,7 @@ public class BusinessMan(AnimatedSprite sprite, Vector2 startingPosition)
 
     public CircleBound Bounds => new(_position, sprite);
 
-    public void Update(float deltaTime, Vector2 wheelPosition)
+    public void Update(float deltaTime, Vector2 wheelPosition, in Wheel wheel)
     {
         const int movementSpeed = 30;
         
@@ -25,6 +25,10 @@ public class BusinessMan(AnimatedSprite sprite, Vector2 startingPosition)
             direction = Vector2.Normalize(deltaDistance);
 
         _position += (direction * movementSpeed) * deltaTime;
+        
+        // Check for collisions
+        if (wheel.Bounds.Intersects(Bounds))
+            wheel.TakeDamage(5);
     }
 
     public void Draw(Batcher batcher)
