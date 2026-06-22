@@ -15,8 +15,6 @@ public class BusinessMan(AnimatedSprite sprite, Vector2 startingPosition)
     {
         const int movementSpeed = 30;
         
-        sprite.Update(deltaTime);
-        
         // Go towards the wheel
         var deltaDistance = wheelPosition - _position;
         var direction = Vector2.Zero;
@@ -25,6 +23,13 @@ public class BusinessMan(AnimatedSprite sprite, Vector2 startingPosition)
             direction = Vector2.Normalize(deltaDistance);
 
         _position += (direction * movementSpeed) * deltaTime;
+        
+        // Update sprite
+        if (direction == Vector2.Zero)
+            sprite.PlayAnimation("Idle", false);
+        else
+            sprite.PlayAnimation("Move", false);
+        sprite.Update(deltaTime);
         
         // Check for collisions
         if (wheel.Bounds.Intersects(Bounds))
