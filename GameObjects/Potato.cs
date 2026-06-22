@@ -9,10 +9,23 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
 {
     private Vector2 _position = startingPosition;
 
+    // Accessed externally for attacking
+    private bool _spinning = false;
+
     // I'm too lazy to implement an enum.
     private string _direction = "right";
 
     public CircleBound Bounds => new CircleBound(_position, sprite);
+
+    public Vector2 GetPosition()
+    {
+        return _position;
+    }
+
+    public bool IsSpinning()
+    {
+        return _spinning;
+    }
     
     public void Update(float deltaTime, KeyboardState keyboard)
     {
@@ -56,12 +69,15 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
             if (animationToPlay == "none")
                 animationToPlay = "MoveHorizontal";
         }
-        
+
         if (keyboard.Down(Keys.Space))
         {
             moving = true;
             animationToPlay = "Spin";
+
+            _spinning = true;
         }
+        else _spinning = false;
 
         if (!moving)
         {

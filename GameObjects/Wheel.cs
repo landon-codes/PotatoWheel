@@ -39,7 +39,6 @@ public class Wheel(AnimatedSprite sprite, Vector2 position)
     {
         sprite.Update(deltaTime);
         _elapsedTime += deltaTime;
-        System.Console.WriteLine(_health);
     }
 
     public void Draw(Batcher batcher)

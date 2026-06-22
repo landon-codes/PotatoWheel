@@ -107,7 +107,21 @@ public class Game : App
    private void UpdateEnemies()
    {
       for (int i = 0; i < _businessMen.Count; i++) 
-         _businessMen[i].Update(Time.Delta, _wheel.GetPosition(), _wheel);
+         _businessMen[i].Update(Time.Delta, _wheel.GetPosition(), _wheel, _player);
+      
+      // Stores the old collection of enemies to avoid changing
+      // lists while iterating over them.
+      var enemies = _businessMen;
+      
+      // Removes dead enemies
+      for (int i = 0; i < _businessMen.Count; i++)
+      {
+         BusinessMan enemy = _businessMen[i];
+         if (enemy.Dead)
+            enemies.Remove(enemy);
+      }
+
+      _businessMen = enemies;
    }
 
    private void RenderEnemies()
