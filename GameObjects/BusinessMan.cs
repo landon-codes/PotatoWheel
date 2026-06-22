@@ -10,7 +10,7 @@ public class BusinessMan(AnimatedSprite sprite, Vector2 startingPosition)
     private int _health = 100;
     
     // Amount of time in seconds that needs to pass before damage can be taken again
-    private const float DamageDelay = 0.5f;
+    private const float DamageDelay = 0.25f;
     private float _elapsedTime;
     
     private Vector2 _position = startingPosition;

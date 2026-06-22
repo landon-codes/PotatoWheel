@@ -11,6 +11,8 @@ game.Run();
 public class Game : App
 {
    private Batcher _batcher;
+
+   private float _elapsedTime;
    
    private const float SpriteScale = 7.0f;
 
@@ -92,14 +94,19 @@ public class Game : App
                    atlasGenerator.GetTexture("BusyManHorizontal1")]}
       };
       
-      CreateNewEnemy();
+      for (int i = 0; i < 5; i++)
+         CreateNewEnemy();
    }
 
    private void CreateNewEnemy()
    {
-      // TODO: Create logic for randomizing the position of enemies.
-      var position = new Vector2(Window.Width / 2.0f, Window.Height / 2.0f);
       var sprite = new AnimatedSprite(_businessMenAnimations, "Idle", 0.3f, SpriteScale);
+      
+      // Generate a random position for the enemy
+      var position = new Vector2(
+         System.Random.Shared.Next(0, Window.Width),
+         System.Random.Shared.Next(Window.Height / 2, (int)(Window.Height + sprite.Height * 2))
+      );
       
       _businessMen.Add(new BusinessMan(sprite, position));
    }
@@ -134,6 +141,16 @@ public class Game : App
 
    protected override void Update()
    {
+      _elapsedTime += Time.Delta;
+      
+      // Check if a new enemy should be spawned
+      const float delayToSpawnEnemy = 2.0f;
+      if (_elapsedTime >= delayToSpawnEnemy)
+      {
+         _elapsedTime -= delayToSpawnEnemy;
+         CreateNewEnemy();
+      }
+      
       _player.Update(Time.Delta, Input.Keyboard);
       UpdateEnemies();
       _wheel.Update(Time.Delta);
