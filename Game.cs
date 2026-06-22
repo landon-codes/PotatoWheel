@@ -141,6 +141,13 @@ public class Game : App
 
    protected override void Update()
    {
+      // End the game if the wheel has no more health
+      if (_wheel.GetHealth() <= 0)
+      {
+         System.Console.WriteLine("Game Over");
+         return;
+      }
+      
       _elapsedTime += Time.Delta;
       
       // Check if a new enemy should be spawned
