@@ -1,6 +1,6 @@
 using Foster.Framework;
-using FosterFlow.Graphics;
-using FosterFlow.Collisions;
+using BaobabEngine.Graphics;
+using BaobabEngine.Collisions;
 using System.Numerics;
 
 namespace PotatoWheel.GameObjects;
