@@ -13,6 +13,8 @@ public class Game : App
 {
    private Batcher _batcher;
 
+   // The length of the game in seconds
+   private const int MatchLength = 120;
    
    private float _delayToSpawnEnemy = 2.0f;
    private float _elapsedTime;
@@ -27,6 +29,9 @@ public class Game : App
 
    private Text _winText;
    private Text _loseText;
+   
+   // The time the game has been running
+   private float _matchTime = 0.0f;
 
    public Game() : base(new AppConfig()
    {
@@ -167,6 +172,14 @@ public class Game : App
       }
       
       _elapsedTime += Time.Delta;
+      _matchTime += Time.Delta;
+      
+      // Check for the win condition
+      if (_matchTime >= MatchLength)
+      {
+         _winText.Show();
+         return;
+      }
       
       // Check if a new enemy should be spawned
       if (_elapsedTime >= _delayToSpawnEnemy)
@@ -174,7 +187,7 @@ public class Game : App
          _elapsedTime -= _delayToSpawnEnemy;
          
          // Slowly makes enemies spawn faster
-          _delayToSpawnEnemy -= (_delayToSpawnEnemy >= 0.9f) ? 0.01f : 0.0f;
+          _delayToSpawnEnemy -= (_delayToSpawnEnemy >= 0.9f) ? 0.03f : 0.0f;
          
          CreateNewEnemy();
       }
