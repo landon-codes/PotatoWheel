@@ -28,8 +28,6 @@ public class Game : App
    private Text _winText;
    private Text _loseText;
 
-   private bool _gameOver = false;
-
    public Game() : base(new AppConfig()
    {
       ApplicationName = "PotatoWheel",
@@ -164,7 +162,7 @@ public class Game : App
       // End the game if the wheel has no more health
       if (_wheel.GetHealth() <= 0)
       {
-         System.Console.WriteLine("Game Over");
+         _loseText.Show();
          return;
       }
       
@@ -193,6 +191,9 @@ public class Game : App
       _wheel.Draw(_batcher);
       RenderEnemies();
       _player.Draw(_batcher);
+      
+      _loseText.Draw(_batcher);
+      _winText.Draw(_batcher);
       
       _batcher.Render(Window);
       _batcher.Clear();
