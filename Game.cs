@@ -4,6 +4,7 @@ using System.Numerics;
 using Foster.Framework;
 using BaobabEngine.Graphics;
 using PotatoWheel.GameObjects;
+using PotatoWheel.UI;
 
 var game = new Game();
 game.Run();
@@ -21,6 +22,11 @@ public class Game : App
 
    private Dictionary<string, List<Subtexture>> _businessMenAnimations;
    private List<BusinessMan> _businessMen = new();
+
+   private Text _winText;
+   private Text _loseText;
+
+   private bool _gameOver = false;
 
    public Game() : base(new AppConfig()
    {
@@ -51,7 +57,11 @@ public class Game : App
          
          // Businessmen animations
          Path.Combine("BusyMan", "BusyManIdle.ase"),
-         Path.Combine("BusyMan", "BusyManHorizontal.ase")
+         Path.Combine("BusyMan", "BusyManHorizontal.ase"),
+         
+         // Text sprites
+         Path.Combine("Text", "YouWin.ase"),
+         Path.Combine("Text", "GameOver.ase")
       ]);
 
       // Create the player sprite
@@ -94,6 +104,14 @@ public class Game : App
                    atlasGenerator.GetTexture("BusyManHorizontal1")]}
       };
       
+      // Create the text
+      Sprite winTextSprite = new(atlasGenerator.GetTexture("YouWin"), SpriteScale);
+      _winText = new Text(winTextSprite, new Vector2(Window.Width / 2.0f, Window.Height / 2.0f), false);
+
+      Sprite loseTextSprite = new(atlasGenerator.GetTexture("GameOver"), SpriteScale);
+      _loseText = new Text(loseTextSprite, new Vector2(Window.Width / 2.0f, Window.Height / 2.0f), false);
+      
+      // Create new enemies to start the game
       for (int i = 0; i < 5; i++)
          CreateNewEnemy();
    }
