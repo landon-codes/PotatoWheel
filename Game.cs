@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using Foster.Framework;
@@ -28,9 +29,13 @@ public class Game : App
 
    private Dictionary<string, List<Subtexture>> _businessMenAnimations;
    private List<BusinessMan> _businessMen = new();
+   private bool _updateEnemies = true;
 
    private Text _winText;
    private Text _loseText;
+
+   private Icon _movementSpeedIcon;
+   private Icon _damageIcon;
    
    // The time the game has been running
    private float _matchTime;
@@ -66,7 +71,11 @@ public class Game : App
          
          // Text sprites
          Path.Combine("Text", "YouWin.ase"),
-         Path.Combine("Text", "GameOver.ase")
+         Path.Combine("Text", "GameOver.ase"),
+         
+         // Icon sprites
+         Path.Combine("Icons", "DamageUp.ase"),
+         Path.Combine("Icons", "MovementSpeedUp.ase")
       ]);
 
       // Create the player sprite
@@ -119,6 +128,22 @@ public class Game : App
       // Create new enemies to start the game
       for (int i = 0; i < 5; i++)
          CreateNewEnemy();
+      
+      // Create the icons
+      _damageIcon = new Icon(
+         new Sprite(atlasGenerator.GetTexture("DamageUp"), SpriteScale * 0.5f),
+         new Vector2(
+            Window.Width * 0.75f,
+            Window.Height * 0.5f
+         )
+      );
+      _movementSpeedIcon = new Icon(
+         new Sprite(atlasGenerator.GetTexture("MovementSpeedUp"), SpriteScale * 0.75f),
+         new Vector2(
+            Window.Width * 0.25f,
+            Window.Height * 0.5f
+         )
+      );
    }
 
    private void CreateNewEnemy()
@@ -127,8 +152,8 @@ public class Game : App
       
       // Generate a random position for the enemy
       var position = new Vector2(
-         System.Random.Shared.Next(0, Window.Width),
-         System.Random.Shared.Next(Window.Height / 2, (int)(Window.Height + sprite.Height * 2))
+         Random.Shared.Next(0, Window.Width),
+         Random.Shared.Next(Window.Height / 2, (int)(Window.Height + sprite.Height * 2))
       );
       
       _businessMen.Add(new BusinessMan(sprite, position));
@@ -136,6 +161,9 @@ public class Game : App
 
    private void UpdateEnemies()
    {
+      if (!_updateEnemies)
+         return;
+      
       for (int i = 0; i < _businessMen.Count; i++) 
          _businessMen[i].Update(Time.Delta, _wheel.GetPosition(), _wheel, _player);
       
@@ -152,6 +180,50 @@ public class Game : App
       }
 
       _businessMen = enemies;
+      
+      // Check if a new enemy should be spawned
+      if (_elapsedTime >= _delayToSpawnEnemy)
+      {
+         _elapsedTime -= _delayToSpawnEnemy;
+         
+         // Slowly makes enemies spawn faster
+         _delayToSpawnEnemy -= (_delayToSpawnEnemy >= 0.9f) ? 0.03f : 0.0f;
+         
+         CreateNewEnemy();
+      }
+   }
+
+   private void RewardPlayer()
+   {
+      _businessMen.Clear();
+
+     _wheel.Spin();
+      if (_wheel.Spinning) return;
+         
+      // Give the player a reward
+      string[] rewards =
+      [
+         "speed",
+         "damage"
+      ];
+      string reward = rewards[Random.Shared.Next(0, rewards.Length)];
+
+      switch (reward)
+      {
+         case "speed":
+            _player.IncreaseSpeed(50);
+            _movementSpeedIcon.IsVisible = true;
+            break;
+         case "damage":
+            _player.IncreaseDamage(10);
+            _damageIcon.IsVisible = true;
+            break;
+      }
+
+      _matchTime = 0.0f;
+      _wheel.ResetHealth();
+      _updateEnemies = true;
+      _delayToSpawnEnemy = 2.0f;
    }
 
    private void RenderEnemies()
@@ -169,7 +241,7 @@ public class Game : App
          _paused = !_paused;
       if (_paused)
       {
-         System.Console.WriteLine("The game is paused.\nPress P to unpause.\n");
+         Console.WriteLine("The game is paused.\nPress P to unpause.\n");
          return;
       }
       
@@ -183,22 +255,13 @@ public class Game : App
       _elapsedTime += Time.Delta;
       _matchTime += Time.Delta;
       
+      _damageIcon.Update(Time.Delta);
+      _movementSpeedIcon.Update(Time.Delta);
+      
       // Check for the win condition
       if (_matchTime >= MatchLength)
       {
-         _winText.Show();
-         return;
-      }
-      
-      // Check if a new enemy should be spawned
-      if (_elapsedTime >= _delayToSpawnEnemy)
-      {
-         _elapsedTime -= _delayToSpawnEnemy;
-         
-         // Slowly makes enemies spawn faster
-          _delayToSpawnEnemy -= (_delayToSpawnEnemy >= 0.9f) ? 0.03f : 0.0f;
-         
-         CreateNewEnemy();
+         RewardPlayer();
       }
       
       _player.Update(Time.Delta, Input.Keyboard);
@@ -216,6 +279,9 @@ public class Game : App
       
       _loseText.Draw(_batcher);
       _winText.Draw(_batcher);
+      
+      _damageIcon.Draw(_batcher);
+      _movementSpeedIcon.Draw(_batcher);
       
       _batcher.Render(Window);
       _batcher.Clear();
