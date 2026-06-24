@@ -10,7 +10,7 @@
     <!-- Dependencies -->
     <ItemGroup>
         <PackageReference Include="FosterFramework" Version="0.3.0" />
-        <ProjectReference Include="..\Baobab\BaobabEngine.csproj" />
+        <PackageReference Include="BaobabEngine.Baobab" Version="0.0.0" />
     </ItemGroup>
 
     <!-- Include Assets folder in builds -->
