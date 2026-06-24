@@ -15,6 +15,10 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
     // I'm too lazy to implement an enum.
     private string _direction = "right";
 
+    public int Damage { get; private set; } = 25;
+
+    private int _movementSpeed = 400;
+
     public CircleBound Bounds => CalculateBounds();
 
     private CircleBound CalculateBounds()
@@ -29,6 +33,16 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         return _position;
     }
 
+    public void IncreaseDamage(int increase)
+    {
+        Damage += increase;
+    }
+
+    public void IncreaseSpeed(int increase)
+    {
+        _movementSpeed += increase;
+    }
+
     public bool IsSpinning()
     {
         return _spinning;
@@ -40,8 +54,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
 
         // Stores the change in distance
         Vector2 motion = new();
-
-        const int movementSpeed = 400;
+        
         bool moving = false;
         string animationToPlay = "none";
 
@@ -49,13 +62,13 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         if (keyboard.Down(Keys.Up) || keyboard.Down(Keys.W))
         {
             moving = true;
-            motion.Y -= movementSpeed * deltaTime;
+            motion.Y -= _movementSpeed * deltaTime;
             animationToPlay = "MoveUp";
         }
         else if (keyboard.Down(Keys.Down) || keyboard.Down(Keys.S))
         {
             moving = true;
-            motion.Y += movementSpeed * deltaTime;
+            motion.Y += _movementSpeed * deltaTime;
             animationToPlay = "MoveDown";
         }
 
@@ -63,7 +76,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         if (keyboard.Down(Keys.Right) || keyboard.Down(Keys.D))
         {
             moving = true;
-            motion.X += movementSpeed * deltaTime;
+            motion.X += _movementSpeed * deltaTime;
             _direction = "right";
 
            // Don't override vertical animations
@@ -73,7 +86,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         else if (keyboard.Down(Keys.Left) || keyboard.Down(Keys.A))
         {
             moving = true;
-            motion.X -= movementSpeed * deltaTime;
+            motion.X -= _movementSpeed * deltaTime;
             _direction = "left";
 
             if (animationToPlay == "none")
