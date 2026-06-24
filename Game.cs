@@ -13,6 +13,8 @@ public class Game : App
 {
    private Batcher _batcher;
 
+   private bool _paused;
+
    // The length of the game in seconds
    private const int MatchLength = 120;
    
@@ -31,7 +33,7 @@ public class Game : App
    private Text _loseText;
    
    // The time the game has been running
-   private float _matchTime = 0.0f;
+   private float _matchTime;
 
    public Game() : base(new AppConfig()
    {
@@ -46,8 +48,6 @@ public class Game : App
 
    protected override void Startup()
    {
-      
-      
       AtlasGenerator atlasGenerator = new("Assets", GraphicsDevice, [
          // Player animations
          Path.Combine("Potato", "PotatoIdle.ase"),
@@ -164,6 +164,15 @@ public class Game : App
 
    protected override void Update()
    {
+      // Update pause state
+      if (Input.Keyboard.Pressed(Keys.P))
+         _paused = !_paused;
+      if (_paused)
+      {
+         System.Console.WriteLine("The game is paused.\nPress P to unpause.\n");
+         return;
+      }
+      
       // End the game if the wheel has no more health
       if (_wheel.GetHealth() <= 0)
       {
