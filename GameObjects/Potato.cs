@@ -15,6 +15,8 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
     // I'm too lazy to implement an enum.
     private string _direction = "right";
 
+    public int Damage { get; private set; } = 25;
+
     public CircleBound Bounds => CalculateBounds();
 
     private CircleBound CalculateBounds()
@@ -27,6 +29,11 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
     public Vector2 GetPosition()
     {
         return _position;
+    }
+
+    public void IncreaseDamage(int increase)
+    {
+        Damage += increase;
     }
 
     public bool IsSpinning()
