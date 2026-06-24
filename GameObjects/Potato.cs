@@ -38,6 +38,9 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
     {
         sprite.Update(deltaTime);
 
+        // Stores the change in distance
+        Vector2 motion = new();
+
         const int movementSpeed = 400;
         bool moving = false;
         string animationToPlay = "none";
@@ -46,13 +49,13 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         if (keyboard.Down(Keys.Up) || keyboard.Down(Keys.W))
         {
             moving = true;
-            _position.Y -= movementSpeed * deltaTime;
+            motion.Y -= movementSpeed * deltaTime;
             animationToPlay = "MoveUp";
         }
         else if (keyboard.Down(Keys.Down) || keyboard.Down(Keys.S))
         {
             moving = true;
-            _position.Y += movementSpeed * deltaTime;
+            motion.Y += movementSpeed * deltaTime;
             animationToPlay = "MoveDown";
         }
 
@@ -60,7 +63,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         if (keyboard.Down(Keys.Right) || keyboard.Down(Keys.D))
         {
             moving = true;
-            _position.X += movementSpeed * deltaTime;
+            motion.X += movementSpeed * deltaTime;
             _direction = "right";
 
            // Don't override vertical animations
@@ -70,7 +73,7 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         else if (keyboard.Down(Keys.Left) || keyboard.Down(Keys.A))
         {
             moving = true;
-            _position.X -= movementSpeed * deltaTime;
+            motion.X -= movementSpeed * deltaTime;
             _direction = "left";
 
             if (animationToPlay == "none")
@@ -94,6 +97,10 @@ public class Potato(AnimatedSprite sprite, Vector2 startingPosition)
         
         if (animationToPlay != "none")
             sprite.PlayAnimation(animationToPlay, false);
+
+        // Apply player speed
+        // Reduces speed when spinning
+        _position += (_spinning) ? motion * 0.25f : motion;
     }
     
     public void Draw(Batcher batcher)
